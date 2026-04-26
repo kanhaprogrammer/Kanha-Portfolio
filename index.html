@@ -1148,7 +1148,6 @@
             transition: width 1.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        .skill-fill.animated {}
 
         /* Tech icons row */
         .tech-icons {
@@ -2204,6 +2203,7 @@
                 box-shadow: -4px 0 24px rgba(0, 0, 0, 0.5);
                 border-left: 1px solid var(--border);
                 z-index: 999;
+                overflow-y: auto;
             }
 
             .nav-links.open {
@@ -2341,6 +2341,107 @@
             }
         }
 
+        /* Mobile nav close button */
+        .nav-close-btn {
+            display: none;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 44px;
+            height: 44px;
+            background: var(--bg-card-alt);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-1);
+            font-size: 1.15rem;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--t);
+            z-index: 1001;
+        }
+
+        .nav-close-btn:hover {
+            border-color: var(--cyan);
+            color: var(--cyan);
+            box-shadow: var(--glow-cyan);
+        }
+
+        @media (max-width: 768px) {
+            .nav-close-btn {
+                display: flex;
+            }
+        }
+
+        /* Ensure all interactive nav elements meet 44×44px tap target */
+        @media (max-width: 768px) {
+            .nav-link {
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                padding: 0.6rem 0;
+            }
+
+            .hamburger,
+            .theme-toggle {
+                min-width: 44px;
+                min-height: 44px;
+            }
+
+            .btn {
+                min-height: 44px;
+            }
+        }
+
+        /* Prevent horizontal overflow on very small devices */
+        @media (max-width: 360px) {
+            .container {
+                padding: 0 0.75rem;
+            }
+
+            .hero-stats {
+                gap: 0.75rem;
+            }
+
+            .stat-num {
+                font-size: 1.2rem;
+            }
+
+            .typing-wrapper {
+                font-size: 0.9rem;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                max-width: 100%;
+            }
+
+            .typing-wrapper {
+                white-space: normal;
+                overflow: visible;
+            }
+
+            .float-badge {
+                display: none;
+            }
+
+            .hero-btns .btn {
+                font-size: 0.8rem;
+                padding: 0.65rem 1rem;
+            }
+
+            .section-title {
+                font-size: clamp(1.4rem, 7vw, 2rem);
+            }
+
+            .contact-form-wrap {
+                padding: 1.5rem 1rem;
+            }
+
+            .newsletter-bar {
+                padding: 1.5rem 1rem;
+            }
+        }
+
         /* ============================================================
        FOCUS STATES (ACCESSIBILITY)
     ============================================================ */
@@ -2407,14 +2508,17 @@
             </a>
 
             <nav id="nav" aria-label="Primary navigation">
-                <ul class="nav-links" id="navLinks">
-                    <li><a href="#home" class="nav-link">Home</a></li>
-                    <li><a href="#about" class="nav-link">About</a></li>
-                    <li><a href="#skills" class="nav-link">Skills</a></li>
-                    <li><a href="#services" class="nav-link">Services</a></li>
-                    <li><a href="#projects" class="nav-link">Projects</a></li>
-                    <li><a href="#testimonials" class="nav-link">Reviews</a></li>
-                    <li><a href="#contact" class="nav-link">Contact</a></li>
+                <ul class="nav-links" id="navLinks" role="menu">
+                    <button class="nav-close-btn" id="navCloseBtn" aria-label="Close navigation menu">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <li role="none"><a href="#home" class="nav-link" role="menuitem">Home</a></li>
+                    <li role="none"><a href="#about" class="nav-link" role="menuitem">About</a></li>
+                    <li role="none"><a href="#skills" class="nav-link" role="menuitem">Skills</a></li>
+                    <li role="none"><a href="#services" class="nav-link" role="menuitem">Services</a></li>
+                    <li role="none"><a href="#projects" class="nav-link" role="menuitem">Projects</a></li>
+                    <li role="none"><a href="#testimonials" class="nav-link" role="menuitem">Reviews</a></li>
+                    <li role="none"><a href="#contact" class="nav-link" role="menuitem">Contact</a></li>
                 </ul>
             </nav>
 
@@ -3371,13 +3475,16 @@
         });
 
         /* ============================================================
-           DYNAMIC AGE CALCULATION
+           DYNAMIC AGE CALCULATION (timezone-safe using local date parts)
         ============================================================ */
         function calcAge() {
-            const birth = new Date(2011, 8, 2); // Sep 2, 2011
+            const birthYear = 2011, birthMonth = 8, birthDay = 2; // Sep 2, 2011 (month 0-based)
             const now = new Date();
-            let age = now.getFullYear() - birth.getFullYear();
-            if (now < new Date(now.getFullYear(), birth.getMonth(), birth.getDate())) age--;
+            const todayYear = now.getFullYear();
+            const todayMonth = now.getMonth();
+            const todayDay = now.getDate();
+            let age = todayYear - birthYear;
+            if (todayMonth < birthMonth || (todayMonth === birthMonth && todayDay < birthDay)) age--;
             return age;
         }
 
@@ -3388,14 +3495,13 @@
             if (ageEl) ageEl.textContent = `${age} years old · Born Sept 2, 2011`;
             if (bigNum) bigNum.textContent = age;
 
-            // Update hero desc if it has hardcoded "14"
             $$('.hero-desc, .about-body, .footer-about-text').forEach(el => {
                 el.innerHTML = el.innerHTML.replace(/\b14-year-old\b/g, `${age}-year-old`);
             });
         });
 
         /* ============================================================
-           TYPING ANIMATION
+           TYPING ANIMATION (overflow-safe)
         ============================================================ */
         const typingPhrases = [
             'fast websites.',
@@ -3411,37 +3517,66 @@
             if (!typingEl) return;
             const phrase = typingPhrases[phraseIdx];
             if (!deleting) {
-                typingEl.textContent = phrase.slice(0, ++charIdx);
-                if (charIdx === phrase.length) { deleting = true; setTimeout(typeLoop, 1800); return; }
+                charIdx = Math.min(charIdx + 1, phrase.length);
+                typingEl.textContent = phrase.slice(0, charIdx);
+                if (charIdx === phrase.length) {
+                    deleting = true;
+                    setTimeout(typeLoop, 1800);
+                    return;
+                }
             } else {
-                typingEl.textContent = phrase.slice(0, --charIdx);
-                if (charIdx === 0) { deleting = false; phraseIdx = (phraseIdx + 1) % typingPhrases.length; setTimeout(typeLoop, 400); return; }
+                charIdx = Math.max(charIdx - 1, 0);
+                typingEl.textContent = phrase.slice(0, charIdx);
+                if (charIdx === 0) {
+                    deleting = false;
+                    phraseIdx = (phraseIdx + 1) % typingPhrases.length;
+                    setTimeout(typeLoop, 400);
+                    return;
+                }
             }
             setTimeout(typeLoop, deleting ? 55 : 90);
         }
         setTimeout(typeLoop, 2200);
 
         /* ============================================================
-           COUNTER ANIMATION
+           COUNTER ANIMATION — starts from 0, triggers only once
         ============================================================ */
+        const animatedCounters = new WeakSet();
+
         function animateCounter(el) {
-            const target = +el.dataset.count;
-            if (!target) return;
+            if (!el || animatedCounters.has(el)) return;
+            const target = +(el.dataset.count);
+            if (!target || isNaN(target)) return;
+            animatedCounters.add(el);
             let current = 0;
-            const step = Math.ceil(target / 40);
+            const step = Math.max(1, Math.ceil(target / 40));
+            // Safely set text — el.firstChild may be a text node
+            const setText = (v) => {
+                if (el.firstChild && el.firstChild.nodeType === Node.TEXT_NODE) {
+                    el.firstChild.nodeValue = v;
+                } else {
+                    el.prepend(document.createTextNode(v));
+                }
+            };
+            setText(0);
             const timer = setInterval(() => {
                 current = Math.min(current + step, target);
-                el.firstChild.nodeValue = current;
+                setText(current);
                 if (current >= target) clearInterval(timer);
             }, 40);
         }
 
         /* ============================================================
-           SKILL BAR ANIMATION
+           SKILL BAR ANIMATION — animate only once
         ============================================================ */
+        const skillBarsAnimated = new Set();
+
         function animateSkillBars() {
             $$('.skill-fill[data-pct]').forEach(bar => {
-                bar.style.width = bar.dataset.pct + '%';
+                if (!skillBarsAnimated.has(bar)) {
+                    skillBarsAnimated.add(bar);
+                    bar.style.width = bar.dataset.pct + '%';
+                }
             });
         }
 
@@ -3454,7 +3589,6 @@
                 entry.target.classList.add('visible');
                 revealObserver.unobserve(entry.target);
 
-                // Trigger counter if in hero stats
                 if (entry.target.classList.contains('hero-grid')) {
                     $$('[data-count]').forEach(animateCounter);
                 }
@@ -3463,39 +3597,71 @@
 
         const skillObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) { animateSkillBars(); skillObserver.disconnect(); }
+                if (entry.isIntersecting) {
+                    animateSkillBars();
+                    skillObserver.disconnect();
+                }
             });
         }, { threshold: 0.2 });
+
+        // Counter observer — trigger counters when visible (intersection based)
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    $$('[data-count]').forEach(animateCounter);
+                    counterObserver.disconnect();
+                }
+            });
+        }, { threshold: 0.3 });
 
         document.addEventListener('DOMContentLoaded', () => {
             $$('.reveal, .stagger-children, .hero-grid').forEach(el => revealObserver.observe(el));
             const skillSection = $('#skills');
             if (skillSection) skillObserver.observe(skillSection);
+
+            // Observe hero-stats for counter animation
+            const heroStats = $('.hero-stats');
+            if (heroStats) counterObserver.observe(heroStats);
+
             // Copyright year
             const cy = $('#copyright-year');
             if (cy) cy.textContent = new Date().getFullYear();
+
+            // Image fallbacks for all images without onerror
+            $$('img:not([onerror])').forEach(img => {
+                img.addEventListener('error', () => {
+                    img.style.display = 'none';
+                });
+            });
         });
 
         /* ============================================================
-           HEADER SCROLL + ACTIVE LINK
+           HEADER SCROLL + ACTIVE LINK (debounced for perf)
         ============================================================ */
         const header = $('#header');
         const backToTop = $('#back-to-top');
+        let scrollTicking = false;
 
         function onScroll() {
-            const y = window.scrollY;
-            if (header) header.classList.toggle('scrolled', y > 60);
-            if (backToTop) backToTop.classList.toggle('visible', y > 400);
+            if (!scrollTicking) {
+                requestAnimationFrame(() => {
+                    const y = window.scrollY;
+                    if (header) header.classList.toggle('scrolled', y > 60);
+                    if (backToTop) backToTop.classList.toggle('visible', y > 400);
 
-            // Active nav link
-            const sections = $$('section[id], div[id]');
-            let current = '';
-            sections.forEach(sec => {
-                if (window.scrollY >= sec.offsetTop - 120) current = sec.id;
-            });
-            $$('.nav-link').forEach(link => {
-                link.classList.toggle('active', link.getAttribute('href') === '#' + current);
-            });
+                    // Active nav link — only use section elements with id
+                    const sections = $$('section[id]');
+                    let current = '';
+                    sections.forEach(sec => {
+                        if (y >= sec.offsetTop - 130) current = sec.id;
+                    });
+                    $$('.nav-link').forEach(link => {
+                        link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+                    });
+                    scrollTicking = false;
+                });
+                scrollTicking = true;
+            }
         }
 
         window.addEventListener('scroll', onScroll, { passive: true });
@@ -3508,44 +3674,74 @@
         }
 
         /* ============================================================
-           MOBILE NAV
+           MOBILE NAV — with X close button, resize reset, sync overlay
         ============================================================ */
         const hamburger = $('#hamburger');
         const navLinks = $('#navLinks');
         const hamburgerIcon = $('#hamburgerIcon');
         const navOverlay = $('#navOverlay');
+        const navCloseBtn = $('#navCloseBtn');
 
         function openNav() {
+            if (!navLinks || !hamburger) return;
             navLinks.classList.add('open');
             hamburger.setAttribute('aria-expanded', 'true');
-            if (hamburgerIcon) hamburgerIcon.className = 'fas fa-times';
+            hamburger.setAttribute('aria-label', 'Close navigation menu');
+            if (hamburgerIcon) hamburgerIcon.className = 'fas fa-bars';
             document.body.style.overflow = 'hidden';
-            if (navOverlay) { navOverlay.classList.add('active'); navOverlay.setAttribute('aria-hidden', 'false'); }
+            if (navOverlay) {
+                navOverlay.classList.add('active');
+                navOverlay.setAttribute('aria-hidden', 'false');
+            }
         }
 
         function closeNav() {
+            if (!navLinks || !hamburger) return;
             navLinks.classList.remove('open');
             hamburger.setAttribute('aria-expanded', 'false');
+            hamburger.setAttribute('aria-label', 'Open navigation menu');
             if (hamburgerIcon) hamburgerIcon.className = 'fas fa-bars';
             document.body.style.overflow = '';
-            if (navOverlay) { navOverlay.classList.remove('active'); navOverlay.setAttribute('aria-hidden', 'true'); }
+            if (navOverlay) {
+                navOverlay.classList.remove('active');
+                navOverlay.setAttribute('aria-hidden', 'true');
+            }
         }
 
         if (hamburger && navLinks) {
             hamburger.addEventListener('click', () => {
-                const open = navLinks.classList.contains('open');
-                open ? closeNav() : openNav();
+                navLinks.classList.contains('open') ? closeNav() : openNav();
             });
 
+            // Close X button inside the menu
+            if (navCloseBtn) navCloseBtn.addEventListener('click', closeNav);
+
+            // Close when any nav link is clicked — ensures overlay sync
             $$('.nav-link').forEach(link => {
-                link.addEventListener('click', closeNav);
+                link.addEventListener('click', () => {
+                    closeNav();
+                });
             });
 
+            // Close on overlay click
             if (navOverlay) navOverlay.addEventListener('click', closeNav);
 
             // Close on Escape key
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && navLinks.classList.contains('open')) closeNav();
+                if (e.key === 'Escape' && navLinks?.classList.contains('open')) closeNav();
+            });
+
+            // Reset nav state when resizing to desktop (≥769px)
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    if (window.innerWidth >= 769) {
+                        closeNav(); // resets overflow, overlay, aria
+                        // On desktop the menu is not a drawer — ensure no leftover styles
+                        navLinks.style.transform = '';
+                    }
+                }, 150);
             });
         }
 
@@ -3580,7 +3776,6 @@
                 $$('.project-card').forEach(card => {
                     const show = filter === 'all' || card.dataset.category === filter;
                     card.classList.toggle('hidden', !show);
-                    card.style.animation = show ? 'none' : '';
                 });
             });
         });
@@ -3590,21 +3785,22 @@
         ============================================================ */
         function showToast(message, type = 'success', duration = 4000) {
             const container = $('#toast-container');
+            if (!container) return;
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+            toast.setAttribute('role', 'alert');
+            toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}" aria-hidden="true"></i> ${message}`;
             container.appendChild(toast);
             setTimeout(() => {
-                toast.style.animation = 'none';
+                toast.style.transition = 'opacity 0.3s, transform 0.3s';
                 toast.style.opacity = '0';
                 toast.style.transform = 'translateY(20px)';
-                toast.style.transition = 'opacity 0.3s, transform 0.3s';
                 setTimeout(() => toast.remove(), 350);
             }, duration);
         }
 
         /* ============================================================
-           CONTACT FORM — FORMSPREE AJAX
+           CONTACT FORM — FORMSPREE AJAX with clear reset
         ============================================================ */
         const contactForm = $('#contactForm');
         if (contactForm) {
@@ -3612,50 +3808,34 @@
                 e.preventDefault();
                 let valid = true;
 
-                // Validate name
-                const name = $('#cf-name');
-                if (!name.value.trim()) {
-                    name.classList.add('error');
-                    $('#err-name').classList.add('show');
-                    valid = false;
-                } else {
-                    name.classList.remove('error');
-                    $('#err-name').classList.remove('show');
+                // Helper to set field validity
+                function validateField(fieldId, errId, testFn) {
+                    const field = $(fieldId);
+                    const errEl = $(errId);
+                    if (!field) return;
+                    const ok = testFn(field.value);
+                    field.classList.toggle('error', !ok);
+                    field.setAttribute('aria-invalid', ok ? 'false' : 'true');
+                    if (errEl) errEl.classList.toggle('show', !ok);
+                    if (!ok) valid = false;
                 }
 
-                // Validate email
-                const email = $('#cf-email');
-                const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!email.value.trim() || !emailRe.test(email.value)) {
-                    email.classList.add('error');
-                    $('#err-email').classList.add('show');
-                    valid = false;
-                } else {
-                    email.classList.remove('error');
-                    $('#err-email').classList.remove('show');
-                }
-
-                // Validate message
-                const msg = $('#cf-message');
-                if (!msg.value.trim()) {
-                    msg.classList.add('error');
-                    $('#err-message').classList.add('show');
-                    valid = false;
-                } else {
-                    msg.classList.remove('error');
-                    $('#err-message').classList.remove('show');
-                }
+                validateField('#cf-name', '#err-name', v => v.trim().length > 0);
+                validateField('#cf-email', '#err-email', v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()));
+                validateField('#cf-message', '#err-message', v => v.trim().length > 0);
 
                 if (!valid) {
                     showToast('Please fill in all required fields.', 'error');
+                    // Focus first error field
+                    const firstErr = contactForm.querySelector('.form-input.error');
+                    if (firstErr) firstErr.focus();
                     return;
                 }
 
-                // Submit via Formspree AJAX
                 const btn = $('#submitBtn');
                 const btnText = $('#submitBtnText');
-                btn.disabled = true;
-                btnText.textContent = 'Sending...';
+                if (btn) btn.disabled = true;
+                if (btnText) btnText.textContent = 'Sending...';
 
                 try {
                     const data = new FormData(contactForm);
@@ -3665,29 +3845,36 @@
                         headers: { Accept: 'application/json' },
                     });
                     if (res.ok) {
+                        // Full form reset + clear error states
                         contactForm.reset();
+                        contactForm.querySelectorAll('.form-input').forEach(f => {
+                            f.classList.remove('error');
+                            f.setAttribute('aria-invalid', 'false');
+                        });
+                        contactForm.querySelectorAll('.form-error-msg').forEach(e => e.classList.remove('show'));
                         showToast('🎉 Message sent! I\'ll get back to you within 24 hours.', 'success', 5000);
                     } else {
-                        const json = await res.json();
-                        throw new Error(json?.errors?.[0]?.message || 'Unknown error');
+                        const json = await res.json().catch(() => ({}));
+                        throw new Error(json?.errors?.[0]?.message || 'Server error');
                     }
                 } catch (err) {
                     showToast('Something went wrong. Please email me directly: kanhaprogrammer.exe@gmail.com', 'error', 6000);
                     console.error('Form error:', err);
                 } finally {
-                    btn.disabled = false;
-                    btnText.textContent = 'Send Message';
+                    if (btn) btn.disabled = false;
+                    if (btnText) btnText.textContent = 'Send Message';
                 }
             });
 
             // Live validation on blur
-            ['#cf-name', '#cf-email', '#cf-message'].forEach(sel => {
+            [['#cf-name', '#err-name'], ['#cf-email', '#err-email'], ['#cf-message', '#err-message']].forEach(([sel, errSel]) => {
                 const el = $(sel);
-                if (el) el.addEventListener('blur', () => {
+                const errEl = $(errSel);
+                if (!el) return;
+                el.addEventListener('blur', () => {
                     if (el.value.trim()) {
                         el.classList.remove('error');
-                        const errId = sel.replace('#cf-', '#err-');
-                        const errEl = $(errId);
+                        el.setAttribute('aria-invalid', 'false');
                         if (errEl) errEl.classList.remove('show');
                     }
                 });
@@ -3699,9 +3886,11 @@
         ============================================================ */
         function subscribeNewsletter() {
             const emailInput = $('#newsletter-email');
+            if (!emailInput) return;
             const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailInput || !emailInput.value.trim() || !emailRe.test(emailInput.value)) {
+            if (!emailInput.value.trim() || !emailRe.test(emailInput.value)) {
                 showToast('Please enter a valid email address.', 'error');
+                emailInput.focus();
                 return;
             }
             showToast('🎉 Subscribed! You\'re on the list.', 'success');
@@ -3714,7 +3903,9 @@
         document.addEventListener('click', (e) => {
             const link = e.target.closest('a[href^="#"]');
             if (!link) return;
-            const target = document.querySelector(link.getAttribute('href'));
+            const href = link.getAttribute('href');
+            if (!href || href === '#') return;
+            const target = document.querySelector(href);
             if (!target) return;
             e.preventDefault();
             const offset = 80;
@@ -3722,11 +3913,18 @@
         });
 
         /* ============================================================
-           INITIAL LOAD COUNTER TRIGGER (hero is visible on load)
+           INITIAL LOAD COUNTER TRIGGER (hero visible on load)
         ============================================================ */
         window.addEventListener('load', () => {
             setTimeout(() => {
-                $$('[data-count]').forEach(animateCounter);
+                // Only animate counters if hero is in view on initial load
+                const heroStats = $('.hero-stats');
+                if (heroStats) {
+                    const rect = heroStats.getBoundingClientRect();
+                    if (rect.top < window.innerHeight) {
+                        $$('[data-count]').forEach(animateCounter);
+                    }
+                }
             }, 2000);
         });
 
