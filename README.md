@@ -1,12 +1,6 @@
 # Kanha Sharma | Web Developer & Founder of WebInstant
 
-![Portfolio Preview](kanha-programmer.jpeg)
-
 A modern, responsive portfolio website showcasing Kanha Sharma's work as a web developer and founder of WebInstant. Built with vanilla HTML, CSS, and JavaScript — featuring a futuristic cyberpunk aesthetic with animated gradients, dynamic typing effects, and smooth interactions.
-
-## 🌟 Live Demo
-
-[View Portfolio](https://kanhaprogrammer.github.io/portfolio)
 
 ## ✨ Features
 
@@ -67,56 +61,6 @@ portfolio/
 - **Tablet (≤900px)** - Stacked layout, avatar hidden
 - **Mobile (≤768px)** - Hamburger menu activated
 - **Small Mobile (≤480px)** - Compact spacing and typography
-
-## 🔧 Setup & Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/kanhaprogrammer/portfolio.git
-   ```
-
-2. **Navigate to project directory**
-   ```bash
-   cd portfolio
-   ```
-
-3. **Open in browser**
-   - Simply open `index.html` in your browser
-   - Or use Live Server extension in VS Code
-
-## 📝 Customization
-
-### Update Personal Info
-Edit the following sections in `index.html`:
-- Name, title, bio → Hero section
-- Email and WhatsApp → Contact section
-- Social media links → Footer section
-
-### Add/Remove Projects
-Modify the `.projects-grid` section in HTML:
-```html
-<article class="proj reveal">
-    <div class="proj-thumb">
-        <img src="your-image.png" alt="Project name">
-    </div>
-    <div class="proj-body">
-        <h3>Project Title</h3>
-        <p>Description</p>
-        <div class="tags">...</div>
-        <a href="https://your-link.com" class="proj-link">View Live →</a>
-    </div>
-</article>
-```
-
-### Modify Typing Lines
-Update the `lines` array in the script:
-```javascript
-const lines = [
-    'Your New Title 1',
-    'Your New Title 2',
-    // Add more...
-];
-```
 
 ## 📧 Contact Form
 
