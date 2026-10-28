@@ -1,6 +1,6 @@
  <!-- HEADER -->
 <p align="center">
-  <a href="https://kanhaprogrammer.github.io/Kanha-Portfolio/" title="Kanha Programmer — Portfolio">
+  <a href="https://webinstant.online/portfolio/" title="Kanha Programmer — Portfolio">
     <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=28&duration=3000&pause=1000&color=22DB68&center=true&vCenter=true&width=650&lines=Hi%2C+I'm+Kanha+Sharma;Web+Developer+%7C+Entrepreneur;Building+Digital+Experiences" alt="Kanha Programmer — Web Developer and Entrepreneur" />
   </a>
 </p>
