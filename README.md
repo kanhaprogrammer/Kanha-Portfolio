@@ -1,6 +1,6 @@
  <!-- HEADER -->
 <p align="center">
-  <a href="https://webinstant.online/kanha/" title="Kanha Programmer — Portfolio">
+  <a href="[https://webinstant.online/kanha/](https://www.webinstant.online/kanha)" title="Kanha Programmer — Portfolio">
     <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=28&duration=3000&pause=1000&color=22DB68&center=true&vCenter=true&width=650&lines=Hi%2C+I'm+Kanha+Sharma;Web+Developer+%7C+Entrepreneur;Building+Digital+Experiences" alt="Kanha Programmer — Web Developer and Entrepreneur" />
   </a>
 </p>
@@ -8,7 +8,7 @@
 <br/>
 
 <p align="center">
-  <a href="https://webinstant.online/kanha/">
+  <a href="[https://webinstant.online/kanha/](https://www.webinstant.online/kanha)">
     <img src="https://img.shields.io/badge/Explore%20My-Portfolio-22DB68?style=for-the-badge&logo=googlechrome&logoColor=black" alt="Explore My Portfolio" />
   </a>
   <a href="https://webinstant.online/">
